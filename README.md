@@ -1,0 +1,1 @@
+# bash-script-to-automate-encryption-and-decryption-using-openssl
