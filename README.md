@@ -1,18 +1,28 @@
-# bash-script-to-automate-encryption-and-decryption-using-openssl
 #!/bin/bash
 
-# Define the input file
-input_file="example.txt"
+encrypt_file() {
+    openssl enc -aes-256-cbc -salt -in "$1" -out "$2"
+    echo "File encrypted successfully!"
+}
 
-# Define the recipient's email address
-recipient_email="recipient@example.com"
+decrypt_file() {
+    openssl enc -d -aes-256-cbc -in "$1" -out "$2"
+    echo "File decrypted successfully!"
+}
 
-# Encrypt the file
-echo "Encrypting the file..."
-gpg --output "$input_file.gpg" --recipient "$recipient_email" --encrypt "$input_file"
-echo "File encrypted successfully."
+if [ $# -lt 3 ]; then
+    echo "Usage: $0 [encrypt|decrypt] <input_file> <output_file>"
+    exit 1
+fi
 
-# Decrypt the file
-echo "Decrypting the file..."
-gpg --output "${input_file}_decrypted.txt" --decrypt "$input_file.gpg"
-echo "File decrypted successfully."
+operation=$1
+input_file=$2
+output_file=$3
+
+case "$operation" in
+    encrypt) encrypt_file "$input_file" "$output_file" ;;
+    decrypt) decrypt_file "$input_file" "$output_file" ;;
+    *) echo "Invalid operation. Please choose 'encrypt' or 'decrypt'." >&2; exit 1 ;;
+esac
+
+exit 0
